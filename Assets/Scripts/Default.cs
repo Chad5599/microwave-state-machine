@@ -1,22 +1,19 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class Start : IState
+public class Default : IState
 {
 	private Text stateLabel;
 
 	public override void OnEnter (MicrowaveSM sm)
 	{
-		if (CameFromState (sm, typeof(WarmUp))) 
-		{
 			stateLabel = GameObject.Find ("/Canvas/CurrentStateText/CurrentStateValue").GetComponent<Text> ();
-			stateLabel.text = "ON";
-		}
+			stateLabel.text = "DEFAULT";
 	}
 
 	public override IState OnEvent (MEvent e)
 	{
-		if (e == MEvent.PRESS_BUTTON) {
+		if (e == MEvent.APP_START) {
 			return new Off ();
 		}
 

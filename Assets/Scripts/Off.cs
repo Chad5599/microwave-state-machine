@@ -5,13 +5,16 @@ public class Off : IState
 {
     private Text stateLabel;
 
-    public void OnEnter()
+	public override void OnEnter(MicrowaveSM sm)
     {
-        stateLabel = GameObject.Find("/Canvas/CurrentStateText/CurrentStateValue").GetComponent<Text>();
-        stateLabel.text = "OFF";
+		if ((CameFromState(sm, typeof(Start))) || (CameFromState(sm, typeof(Default))) ) 
+		{
+			stateLabel = GameObject.Find ("/Canvas/CurrentStateText/CurrentStateValue").GetComponent<Text> ();
+			stateLabel.text = "OFF";
+		}
     }
 
-    public IState OnEvent(MEvent e)
+    public override IState OnEvent(MEvent e)
     {
         if (e == MEvent.PRESS_BUTTON)
         {

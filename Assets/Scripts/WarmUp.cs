@@ -5,40 +5,39 @@ using UnityEngine.UI;
 
 public class WarmUp : IState
 {
-    private Text stateLabel;
-    private MicrowaveSM machine;
-    private bool isWarmingUp;
+	private Text stateLabel;
+	private MicrowaveSM machine;
 
-    public void OnEnter()
-    {
-        if (!isWarmingUp)
-        {
-            isWarmingUp = true;
+	public override void OnEnter (MicrowaveSM sm)
+	{
+		stateLabel = GameObject.Find ("/Canvas/CurrentStateText/CurrentStateValue").GetComponent<Text> ();
 
-            stateLabel = GameObject.Find("/Canvas/CurrentStateText/CurrentStateValue").GetComponent<Text>();
-            stateLabel.text = "WARMING UP";
+		if (CameFromState (sm, typeof(Off))) 
+		{
+			stateLabel.text = "WARMING UP";
 
-            machine = GameObject.Find("Canvas").GetComponent<MicrowaveSM>();
-            machine.StartCoroutine(WarmUpCR());
-        }
-    }
+			machine = GameObject.Find ("Canvas").GetComponent<MicrowaveSM> ();
+			machine.StartCoroutine (WarmUpCR ());
+		} 
+		else if (CameFromState (sm, typeof(WarmUp))) 
+		{
+			stateLabel.text = "ALREADY WARMING UP";	
+		}
+	}
 
-    IEnumerator WarmUpCR()
-    {
-        yield return new WaitForSeconds(5f);
+	IEnumerator WarmUpCR ()
+	{
+		yield return new WaitForSeconds (5f);
 
-        machine.EventHandler(MEvent.WARM_UP_COMPLETE);
-    }
+		machine.EventHandler (MEvent.WARM_UP_COMPLETE);
+	}
 
-    public IState OnEvent(MEvent e)
-    {
-        if (e == MEvent.WARM_UP_COMPLETE)
-        {
-            isWarmingUp = false;
+	public override IState OnEvent (MEvent e)
+	{
+		if (e == MEvent.WARM_UP_COMPLETE) {
+			return new Start ();
+		}
 
-            return new Start();
-        }
-
-        return this;
-    }
+		return this;
+	}		
 }
